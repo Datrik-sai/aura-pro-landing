@@ -1,0 +1,25 @@
+# Backups and previous versions
+index.prev.html
+index.v2.html
+index.v3.html
+
+# QA scripts and screenshots
+qa-*.py
+gsap-qa*.py
+qa-screenshots/
+qa-*.png
+desktop-*.png
+mobile-*.png
+
+# Build artifacts
+*.tgz
+*.zip
+gsap-local/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Original PNGs (JPGs are used)
+img/*.png
+images/

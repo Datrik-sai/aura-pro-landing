@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA Pro — Hear Everything</title>
+<meta name="description" content="AURA Pro — a concept premium headphone launch page. Portfolio demonstration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero.jpg">
+<script>
+  /* Runs before first paint.
+     'js'          → allows the short hero intro to start from a hidden state (no flash).
+     'intro-done'  → failsafe: if GSAP never runs, the intro elements are revealed by CSS
+                     after 1.6s, so nothing can stay hidden. Reduced-motion users get it at once. */
+  (function (d) {
+    d.classList.add('js');
+    var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (rm) { d.classList.add('intro-done', 'reduced-motion'); return; }
+    setTimeout(function () { d.classList.add('intro-done'); }, 1600);
+  })(document.documentElement);
+</script>
+<style>
+  /* ═════════════════════════════════════════════
+     DESIGN TOKENS (unchanged brand system)
+     ═════════════════════════════════════════════ */
+  :root {
+    color-scheme: dark;
+    --bg:           #08090B;
+    --bg-secondary: #111216;
+    --bg-surface:   #16171B;
+    --text:         #F1EFEA;
+    --text-muted:   #9A989E;
+    --text-dim:     #6E6C72;
+    --accent:       #C9A96E;
+    --accent-hi:    #E2C995;
+    --hairline:     rgba(255,255,255,0.07);
+    --hairline-gold:rgba(201,169,110,0.22);
+    --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+    --gutter:       clamp(1.25rem, 5vw, 5rem);
+    --section-y:    clamp(5.5rem, 10vw, 9rem);
+    --content-max:  1240px;
+    --nav-h:        76px;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--bg); scroll-behavior: smooth; scroll-padding-top: var(--nav-h); }
+  html.reduced-motion { scroll-behavior: auto; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+  /* Film grain — atmospheric, very low opacity */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    z-index: 300; pointer-events: none;
+    opacity: 0.022;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+
+  .overline {
+    display: inline-block;
+    font-size: 0.66rem;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    font-size: clamp(2.2rem, 4.4vw, 3.6rem);
+  }
+  .lede { color: var(--text-muted); font-size: clamp(0.95rem, 1.15vw, 1.05rem); line-height: 1.8; }
+  .skip-link {
+    position: fixed; left: 1rem; top: 0.75rem; z-index: 400;
+    padding: 0.7rem 1.1rem; border-radius: 8px;
+    background: var(--accent); color: #0B0B0C; text-decoration: none;
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
+    transform: translateY(-160%); transition: transform 0.25s var(--ease-out);
+  }
+  .skip-link:focus { transform: none; }
+  .visually-hidden {
+    position: absolute !important; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    padding: 1rem 2rem;
+    border-radius: 999px;
+    font: 600 0.7rem/1 var(--font-body);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    text-decoration: none; cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.35s var(--ease-out), border-color 0.35s, color 0.35s, transform 0.35s var(--ease-out), box-shadow 0.35s;
+  }
+  .btn svg { width: 14px; height: 14px; transition: transform 0.35s var(--ease-out); }
+  .btn:hover svg { transform: translateX(3px); }
+  .btn-primary { background: var(--accent); color: #0B0B0C; }
+  .btn-primary:hover { background: var(--accent-hi); transform: translateY(-1px); box-shadow: 0 12px 40px rgba(201,169,110,0.18); }
+  .btn-ghost { color: var(--text); border-color: rgba(255,255,255,0.16); background: transparent; }
+  .btn-ghost:hover { border-color: var(--hairline-gold); color: var(--accent-hi); }
+
+  /* ═════════════════════════════════════════════
+     SCROLL PROGRESS
+     ═════════════════════════════════════════════ */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 2px; z-index: 210; pointer-events: none;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+    transform: scaleX(0); transform-origin: 0 50%;
+  }
+
+  /* ═════════════════════════════════════════════
+     NAVIGATION
+     ═════════════════════════════════════════════ */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: var(--nav-h);
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0 var(--gutter);
+    transition: background 0.5s var(--ease-out), border-color 0.5s, height 0.5s var(--ease-out);
+    border-bottom: 1px solid transparent;
+  }
+  .nav.scrolled {
+    height: 64px;
+    background: rgba(8, 9, 11, 0.86);
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    border-bottom-color: rgba(255,255,255,0.05);
+  }
+  .nav-logo {
+    font-family: var(--font-display); font-size: 1.15rem; font-weight: 600;
+    letter-spacing: 0.32em; text-decoration: none;
+  }
+  .nav > .nav-logo { margin-right: auto; }
+  .nav-links { display: flex; align-items: center; gap: 2.4rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .nav-reserve {
+    color: var(--accent); border: 1px solid var(--hairline-gold);
+    padding: 0.6rem 1.2rem; border-radius: 999px;
+  }
+  .nav-links .nav-reserve:hover { color: var(--accent-hi); border-color: var(--accent); }
+  .nav-toggle {
+    display: none;
+    background: none; border: 0; color: var(--text); cursor: pointer;
+    width: 44px; height: 44px; margin-right: -10px;
+    align-items: center; justify-content: center;
+  }
+  .nav-toggle span, .nav-toggle span::before {
+    content: ''; display: block; width: 20px; height: 1px; background: currentColor;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .nav-toggle span { position: relative; box-shadow: 0 0 0 transparent; }
+  .nav-toggle span::before { position: absolute; top: 6px; }
+  .nav-toggle[aria-expanded="true"] span { transform: translateY(3px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span::before { transform: translateY(-6px) rotate(-90deg); }
+
+  /* ═════════════════════════════════════════════
+     HERO — split layout, product bleeds right
+     ═════════════════════════════════════════════ */
+  .hero {
+    position: relative;
+    min-height: 100vh; min-height: 100svh;
+    display: grid;
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    align-items: center;
+    padding: calc(var(--nav-h) + 1rem) 0 3.5rem var(--gutter);
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute; pointer-events: none;
+    width: 60vw; height: 60vw; max-width: 900px; max-height: 900px;
+    right: -6vw; top: 50%; transform: translateY(-50%);
+    background: radial-gradient(circle, rgba(201,169,110,0.10) 0%, rgba(201,169,110,0.03) 40%, transparent 68%);
+    filter: blur(40px);
+  }
+  .hero-copy { position: relative; z-index: 2; max-width: 560px; }
+  .hero-copy .overline { margin-bottom: 1.75rem; }
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3.6rem, 8vw, 7.4rem);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    margin-bottom: 1.75rem;
+  }
+  .hero-title em { font-style: italic; font-weight: 400; color: var(--accent-hi); }
+  .hero-sub { max-width: 400px; margin-bottom: 2.5rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+  .hero-price { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); }
+  .hero-price strong { color: var(--text-muted); font-weight: 500; }
+
+  .hero-media { position: relative; z-index: 1; margin-left: -7vw; }
+  .hero-media img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 50% 45%;
+    /* Feather every edge into the page background — the photo's own background is near-black */
+    -webkit-mask-image:
+      radial-gradient(ellipse 50% 50% at 52% 50%, #000 66%, transparent 100%);
+            mask-image:
+      radial-gradient(ellipse 50% 50% at 52% 50%, #000 66%, transparent 100%);
+    transform-origin: 50% 55%;
+  }
+  .hero-scroll {
+    position: absolute; left: var(--gutter); bottom: 2rem; z-index: 2;
+    display: flex; align-items: center; gap: 0.9rem;
+    font-size: 0.6rem; letter-spacing: 0.32em; text-transform: uppercase; color: var(--text-dim);
+  }
+  .hero-scroll i { display: block; width: 40px; height: 1px; background: var(--hairline-gold); position: relative; overflow: hidden; }
+  .hero-scroll i::after {
+    content: ''; position: absolute; inset: 0; background: var(--accent);
+    transform: translateX(-100%); animation: cue 2.4s var(--ease-out) infinite;
+  }
+  @keyframes cue { 60%, 100% { transform: translateX(100%); } }
+
+  /* Intro (pre-hidden only when JS is running; failsafe class reveals it) */
+  .js .intro { opacity: 0; transform: translateY(16px); }
+  .intro-done .intro { opacity: 1; transform: none; }
+
+  /* ═════════════════════════════════════════════
+     MANIFESTO — typographic bridge into the story
+     ═════════════════════════════════════════════ */
+  .manifesto {
+    padding: var(--section-y) var(--gutter) clamp(0.5rem, 2vw, 1.5rem);
+    display: grid; justify-items: center; text-align: center;
+  }
+  .manifesto .overline { margin-bottom: 2.25rem; }
+  .manifesto-text {
+    font-family: var(--font-display);
+    font-style: italic; font-weight: 400;
+    font-size: clamp(1.5rem, 3.1vw, 2.55rem);
+    line-height: 1.45;
+    max-width: 30ch;
+    text-wrap: balance;
+  }
+  .manifesto-text .w { display: inline; }
+  .manifesto-rule {
+    width: 1px; height: clamp(2.5rem, 5vw, 4rem); margin-top: 2.5rem;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    opacity: 0.6;
+  }
+
+  /* ═════════════════════════════════════════════
+     PRODUCT STORY
+     Default (no JS / touch / mobile / reduced motion): stacked, normal scroll.
+     .is-pinned (desktop + GSAP): one pinned viewport, stages layered.
+     ═════════════════════════════════════════════ */
+  .story { position: relative; }
+  .story-viewport {
+    position: relative;
+    padding: 0 var(--gutter) var(--section-y);
+    max-width: var(--content-max); margin: 0 auto;
+  }
+  .story-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+    padding-bottom: 1.5rem; margin-bottom: 3rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .story-rail { display: flex; gap: 2rem; list-style: none; }
+  .story-rail li {
+    font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-dim);
+    display: flex; gap: 0.6rem; align-items: baseline;
+    transition: color 0.5s var(--ease-out);
+  }
+  .story-rail li b { font-weight: 500; color: inherit; font-variant-numeric: tabular-nums; }
+  .story-rail li.active { color: var(--accent); }
+  .story.is-pinned .story-rail li { position: relative; padding-bottom: 0.55rem; }
+  .story.is-pinned .story-rail li::after { /* underline marks the current stage */
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: var(--accent); transform: scaleX(0); transform-origin: 0 50%;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .story.is-pinned .story-rail li.active::after { transform: scaleX(1); }
+  .story.is-pinned .story-rail li:not(.active) { color: var(--text-muted); opacity: 0.55; }
+  .story-meter { display: none; }
+
+  .story-stages { display: grid; gap: clamp(4rem, 9vw, 7rem); }
+  .story-stage { display: grid; gap: 1.75rem; }
+  .story-figure {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #0A0A0A;
+  }
+  .story-figure img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 50%;
+  }
+  .story-figure::after { /* soft vignette so the photo sits in the page, not on it */
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 0 0 80px 30px rgba(8,9,11,0.75);
+  }
+  .story-copy { max-width: 440px; }
+  .story-copy .overline { margin-bottom: 1rem; }
+  .story-title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.9rem, 3.4vw, 2.9rem); line-height: 1.1; letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+  }
+  .story-desc { color: var(--text-muted); font-size: 0.98rem; line-height: 1.8; }
+  .story-specs {
+    list-style: none; margin-top: 1.75rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1.5rem;
+  }
+  .story-specs li {
+    border-top: 1px solid var(--hairline); padding-top: 0.7rem;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+  }
+  .story-specs li span { display: block; margin-top: 0.25rem; letter-spacing: 0.04em; text-transform: none; font-size: 0.8rem; color: var(--text-muted); }
+
+  /* Hotspots — only used in pinned mode */
+  .hotspot { display: none; }
+
+  /* Stacked layout, wide screens (reduced motion / touch desktops) */
+  @media (min-width: 960px) {
+    .story-stage { grid-template-columns: 1.35fr 1fr; align-items: center; gap: clamp(2.5rem, 5vw, 5rem); }
+    .story-stage:nth-child(even) .story-figure { order: 2; }
+  }
+
+  /* ── PINNED MODE ── */
+  .story.is-pinned .story-viewport {
+    height: 100vh; height: 100svh;
+    max-width: none; margin: 0;
+    padding: calc(var(--nav-h) + 0.75rem) var(--gutter) 2rem;
+    display: grid; grid-template-rows: auto 1fr;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .story.is-pinned .story-viewport::before { /* light pool behind the product column */
+    content: ''; position: absolute; pointer-events: none;
+    width: 70vh; height: 70vh; right: 18%; top: 52%;
+    transform: translate(50%, -50%);
+    background: radial-gradient(circle, rgba(201,169,110,0.09), transparent 65%);
+    filter: blur(30px);
+  }
+  .story.is-pinned .story-head { margin-bottom: 0; position: relative; z-index: 3; }
+  .story.is-pinned .story-meter {
+    display: block; position: relative; width: 120px; height: 1px; background: var(--hairline);
+  }
+  .story.is-pinned .story-meter i { position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; }
+  .story.is-pinned .story-stages { display: grid; gap: 0; min-height: 0; position: relative; }
+  .story.is-pinned .story-stage {
+    grid-area: 1 / 1;
+    grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 4.5rem);
+    align-items: center;
+    min-height: 0;
+  }
+  .story.is-pinned .story-stage .story-copy { order: -1; grid-column: 1; grid-row: 1; }
+  @media (max-width: 1199px) {
+    .story.is-pinned .story-stage { grid-template-columns: minmax(250px, 300px) minmax(0, 1fr); gap: 2rem; }
+    .story.is-pinned .story-title { font-size: 1.85rem; }
+  }
+  @media (max-width: 1279px) {
+    /* keep left-pointing labels clear of the copy column at narrower desktops */
+    .story.is-pinned .hotspot { gap: 7px; }
+    .story.is-pinned .hotspot .hotspot-line { width: 20px; }
+    .story.is-pinned .hotspot .hotspot-text { font-size: 0.6rem; letter-spacing: 0.12em; padding: 0.38rem 0.55rem; }
+    .story.is-pinned .hotspot .hotspot-text small { font-size: 0.72rem; }
+    .story.is-pinned .hotspot.to-left .hotspot-text { white-space: normal; max-width: 9.5rem; }
+  }
+  .story.is-pinned .story-stage .story-figure {
+    grid-column: 2; grid-row: 1; order: 0;
+    justify-self: center;
+    /* 5:4 frame sized by the available height; the 16:9 photos are cover-cropped
+       to their central 70%, which holds the whole product at a large scale. */
+    width: min(100%, calc((100svh - var(--nav-h) - 6rem) * 1.25));
+    aspect-ratio: 5 / 4;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .story.is-pinned .story-figure img {
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+            mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  }
+  .story.is-pinned .story-figure::after { display: none; }
+  .story.is-pinned .story-specs { display: none; }
+  .story.is-pinned .hotspot { display: flex; }
+
+  /* Hotspot labels — coordinates are % of the 5:4 frame, measured on img/side.jpg */
+  .hotspot {
+    position: absolute; z-index: 2;
+    left: var(--x); top: var(--y);
+    align-items: center; gap: 10px;
+    transform: translate(-5px, -50%);
+    pointer-events: none;
+  }
+  .hotspot.to-left { flex-direction: row-reverse; transform: translate(calc(-100% + 5px), -50%); }
+  .hotspot-dot {
+    flex: none; width: 10px; height: 10px; border-radius: 50%;
+    border: 1px solid var(--accent); background: rgba(8,9,11,0.6);
+    box-shadow: 0 0 0 4px rgba(201,169,110,0.12);
+  }
+  .hotspot-line { flex: none; width: clamp(28px, 4vw, 56px); height: 1px; background: var(--accent); transform-origin: 0 50%; opacity: 0.8; }
+  .hotspot.to-left .hotspot-line { transform-origin: 100% 50%; }
+  .hotspot-text {
+    font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-hi); font-weight: 500;
+    white-space: nowrap; line-height: 1.45;
+    padding: 0.45rem 0.7rem; border-radius: 6px;
+    background: rgba(8,9,11,0.72);
+    border: 1px solid rgba(201,169,110,0.14);
+  }
+  .hotspot-text small { display: block; letter-spacing: 0.02em; text-transform: none; font-size: 0.78rem; font-weight: 300; color: #C4C1BA; }
+  .hotspot.to-left .hotspot-text { text-align: right; }
+
+  /* ═════════════════════════════════════════════
+     FEATURES — editorial index, not cards
+     ═════════════════════════════════════════════ */
+  .features {
+    padding: var(--section-y) var(--gutter);
+    max-width: var(--content-max); margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(3rem, 7vw, 7rem);
+    align-items: start;
+  }
+  .features-aside { position: sticky; top: calc(var(--nav-h) + 2rem); }
+  .features-aside .overline { margin-bottom: 1.25rem; }
+  .features-aside .display { margin-bottom: 1.25rem; }
+  .features-aside .lede { max-width: 380px; }
+  .features-figure {
+    margin-top: 2.5rem; border-radius: 16px; overflow: hidden; position: relative;
+    aspect-ratio: 16 / 10;
+  }
+  .features-figure img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 40%; }
+  .features-figure::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 60px 20px rgba(8,9,11,0.7); }
+  .features-figure figcaption {
+    position: absolute; left: 1.1rem; bottom: 0.9rem; z-index: 1;
+    font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted);
+  }
+
+  .feature-list { list-style: none; border-bottom: 1px solid var(--hairline); }
+  .feature-row {
+    position: relative;
+    display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    gap: 0 1.5rem; align-items: start;
+    padding: 2.4rem 0 2.5rem;
+    border-top: 1px solid var(--hairline);
+  }
+  .feature-row::before { /* gold hairline draws across on hover */
+    content: ''; position: absolute; left: 0; top: -1px; height: 1px; width: 100%;
+    background: var(--accent); transform: scaleX(0); transform-origin: 0 50%;
+    transition: transform 0.7s var(--ease-out);
+  }
+  .feature-row:hover::before { transform: scaleX(1); }
+  .feature-num {
+    font-family: var(--font-display); font-style: italic; font-size: 1rem; color: var(--text-dim);
+    padding-top: 0.45rem; transition: color 0.4s;
+  }
+  .feature-row:hover .feature-num { color: var(--accent); }
+  .feature-title {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.3vw, 1.95rem); line-height: 1.2; margin-bottom: 0.7rem;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .feature-row:hover .feature-title { transform: translateX(6px); }
+  .feature-desc { color: var(--text-muted); font-size: 0.93rem; line-height: 1.8; max-width: 46ch; }
+  .feature-stat {
+    text-align: right; padding-top: 0.3rem;
+    font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .features-note {
+    grid-column: 2 / -1; margin-top: -2rem;
+    font-size: 0.72rem; letter-spacing: 0.02em; color: var(--text-dim);
+  }
+  .feature-stat small {
+    display: block; margin-top: 0.5rem;
+    font-family: var(--font-body); font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim);
+  }
+
+  /* ═════════════════════════════════════════════
+     SPECIFICATIONS
+     ═════════════════════════════════════════════ */
+  .specs {
+    position: relative; overflow: hidden;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline);
+    padding: var(--section-y) var(--gutter);
+  }
+  .specs::before {
+    content: ''; position: absolute; pointer-events: none;
+    width: 520px; height: 520px; right: -160px; top: -200px;
+    background: radial-gradient(circle, rgba(201,169,110,0.07), transparent 70%);
+  }
+  .specs-inner {
+    position: relative; max-width: var(--content-max); margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(3rem, 7vw, 7rem); align-items: center;
+  }
+  .specs-intro .overline { margin-bottom: 1.25rem; }
+  .specs-intro .display { margin-bottom: 1.25rem; }
+  .specs-intro .lede { max-width: 360px; }
+  .concept-note {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    margin-top: 2rem; padding: 0.6rem 0.95rem;
+    border: 1px solid var(--hairline); border-radius: 10px; line-height: 1.5;
+    font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .concept-note::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: 0.8; }
+  .spec-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--hairline); border-left: 1px solid var(--hairline);
+  }
+  .spec {
+    padding: clamp(1.6rem, 3vw, 2.4rem) clamp(1.25rem, 2.5vw, 2rem) clamp(1.5rem, 2.6vw, 2.1rem);
+    border-right: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline);
+    display: grid; grid-template-rows: auto auto 1fr; align-content: start;
+    transition: background 0.5s var(--ease-out);
+  }
+  .spec:hover { background: rgba(201,169,110,0.025); }
+  .spec-index {
+    font-family: var(--font-display); font-style: italic; font-size: 0.85rem; color: var(--text-dim);
+    margin-bottom: 1.1rem;
+  }
+  .spec-value {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(2.8rem, 5.2vw, 4.4rem); line-height: 1; color: var(--text);
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  }
+  .spec-value { display: flex; align-items: flex-start; }
+  .spec-unit {
+    font-family: var(--font-body); font-weight: 400;
+    font-size: 0.3em; letter-spacing: 0.04em;
+    color: var(--accent); margin: 0.5em 0 0 0.55em;
+  }
+  .spec-label {
+    margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid var(--hairline);
+    font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text);
+  }
+  .spec-label small {
+    display: block; margin-top: 0.35rem;
+    font-size: 0.8rem; letter-spacing: 0; text-transform: none; color: var(--text-muted);
+  }
+
+  /* ═════════════════════════════════════════════
+     DESIGN PRINCIPLE (replaces fabricated review)
+     ═════════════════════════════════════════════ */
+  .principle {
+    padding: var(--section-y) var(--gutter) calc(var(--section-y) * 0.6);
+    max-width: 900px; margin: 0 auto; text-align: center;
+  }
+  .principle .overline { margin-bottom: 2rem; }
+  .principle blockquote {
+    font-family: var(--font-display); font-style: italic; font-weight: 400;
+    font-size: clamp(1.5rem, 3vw, 2.3rem); line-height: 1.45; text-wrap: balance;
+  }
+  .principle cite {
+    display: block; margin-top: 2rem; font-style: normal;
+    font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-dim);
+  }
+
+  /* ═════════════════════════════════════════════
+     RESERVE — launch end card
+     ═════════════════════════════════════════════ */
+  .reserve {
+    position: relative; overflow: hidden;
+    padding: calc(var(--section-y) * 0.5) var(--gutter) var(--section-y);
+    text-align: center;
+  }
+  .reserve-media { max-width: 880px; margin: 0 auto 1.5rem; }
+  .reserve-media img {
+    width: 100%; aspect-ratio: 16 / 8; object-fit: cover; object-position: 50% 42%;
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 55%, transparent 100%);
+            mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 55%, transparent 100%);
+  }
+  .reserve-copy { position: relative; }
+  .reserve-copy .overline { margin-bottom: 1.25rem; }
+  .reserve-recap {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 0.4rem 1.6rem;
+    list-style: none; margin: 0 auto 2.25rem;
+    font-size: 0.62rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--text-dim);
+  }
+  .reserve-recap li { display: flex; align-items: center; gap: 1.6rem; }
+  .reserve-recap li + li::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: 0.7; }
+  .reserve-recap b { font-weight: 500; color: var(--accent); margin-right: 0.5rem; }
+  .reserve-copy .display { margin-bottom: 1.25rem; font-size: clamp(2.4rem, 5vw, 4rem); }
+  .reserve-copy .lede { max-width: 440px; margin: 0 auto 2.5rem; }
+  .reserve-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+  .reserve-fine { margin-top: 1.5rem; font-size: 0.68rem; letter-spacing: 0.06em; color: var(--text-dim); }
+
+  .demo-dialog {
+    margin: auto; max-width: 420px; width: calc(100% - 2.5rem);
+    background: var(--bg-surface); color: var(--text);
+    border: 1px solid var(--hairline-gold); border-radius: 18px;
+    padding: 2.25rem 2rem 2rem; text-align: left;
+  }
+  .demo-dialog::backdrop { background: rgba(4,4,6,0.72); backdrop-filter: blur(6px); }
+  .demo-dialog h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.6rem; margin: 0.8rem 0 0.75rem; }
+  .demo-dialog p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.75rem; }
+  .demo-dialog .reserve-actions { justify-content: flex-start; }
+
+  /* ═════════════════════════════════════════════
+     FOOTER
+     ═════════════════════════════════════════════ */
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding: 2rem var(--gutter);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    font-size: 0.68rem; letter-spacing: 0.08em; color: var(--text-dim);
+  }
+  footer .nav-logo { font-size: 0.95rem; color: var(--text-muted); }
+  footer a.top-link { color: var(--accent); text-decoration: none; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.62rem; }
+
+  /* ═════════════════════════════════════════════
+     RESPONSIVE
+     ═════════════════════════════════════════════ */
+  @media (max-width: 1100px) {
+    .hero-media { margin-left: -11vw; }
+  }
+  @media (max-width: 899px) {
+    :root { --nav-h: 64px; }
+    .nav-toggle { display: inline-flex; }
+    .nav-links {
+      position: fixed; inset: var(--nav-h) 0 auto 0;
+      flex-direction: column; align-items: stretch; gap: 0;
+      padding: 0.5rem var(--gutter) 1.5rem;
+      background: rgba(8,9,11,0.97);
+      border-bottom: 1px solid var(--hairline);
+      transform: translateY(-8px); opacity: 0; visibility: hidden;
+      transition: opacity 0.3s, transform 0.3s var(--ease-out), visibility 0s 0.3s;
+    }
+    .nav.open .nav-links { opacity: 1; transform: none; visibility: visible; transition: opacity 0.3s, transform 0.3s var(--ease-out); }
+    .nav.open { background: rgba(8,9,11,0.97); }
+    .nav-links li { border-bottom: 1px solid var(--hairline); }
+    .nav-links a { display: block; padding: 1.1rem 0; font-size: 0.75rem; color: var(--text); }
+    .nav-links .nav-reserve { border: 0; padding: 1.1rem 0; border-radius: 0; }
+    .nav-links li:last-child { border-bottom: 0; }
+
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+      padding: calc(var(--nav-h) + 0.25rem) var(--gutter) 3.5rem;
+      min-height: auto; text-align: left;
+      gap: 0.25rem;
+    }
+    /* Phones/tablets: product leads, headline follows directly beneath */
+    .hero-media { margin: 0 calc(var(--gutter) * -1); order: -1; }
+    .hero-media img {
+      aspect-ratio: 4 / 3;
+      -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
+              mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 70%, transparent 100%);
+    }
+    .hero-copy .overline { margin-bottom: 1rem; }
+    .hero-title { font-size: clamp(3.2rem, 14vw, 5.5rem); margin-bottom: 1.25rem; }
+    .hero-glow { top: 25%; }
+    .hero-glow { width: 120vw; height: 120vw; right: -30vw; top: 70%; }
+    .hero-scroll { display: none; }
+
+    .features { grid-template-columns: 1fr; }
+    .features-note { grid-column: auto; margin-top: -1.5rem; }
+    .features-aside { position: static; }
+    .features-figure { aspect-ratio: 16 / 9; }
+    .specs-inner { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 600px) and (max-width: 899px) {
+    .hero-media img { aspect-ratio: 16 / 10; }
+    .hero { padding-bottom: 4.5rem; }
+  }
+  @media (max-width: 560px) {
+    .story-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .story-rail { gap: 1.1rem; flex-wrap: wrap; }
+    .story-figure { aspect-ratio: 1 / 1; border-radius: 14px; }
+    .story-figure img { object-position: 50% 50%; }
+    .feature-row { grid-template-columns: 2.25rem minmax(0, 1fr); padding: 2rem 0; }
+    .feature-stat { grid-column: 2; text-align: left; margin-top: 1.1rem; display: flex; align-items: baseline; gap: 0.75rem; }
+    .feature-stat small { margin-top: 0; }
+    .spec-value { font-size: clamp(2.3rem, 11vw, 3rem); }
+    .reserve-media img { aspect-ratio: 4 / 3; }
+    .reserve-actions .btn { width: 100%; justify-content: center; }
+    footer { flex-direction: column; text-align: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#story">Skip to the product story</a>
+
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ═══════ NAV ═══════ -->
+<header class="nav" id="nav">
+  <a href="#top" class="nav-logo" aria-label="AURA — back to top">AURA</a>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu"><span></span></button>
+  <nav aria-label="Primary">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#story">The Design</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#specs">Specs</a></li>
+      <li><a href="#reserve" class="nav-reserve">Reserve</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<!-- ═══════ HERO ═══════ -->
+<section class="hero" id="top" aria-labelledby="heroTitle">
+  <div class="hero-glow" aria-hidden="true"></div>
+
+  <div class="hero-copy">
+    <span class="overline intro">Introducing AURA Pro</span>
+    <!-- Headline is never hidden: readable before and without JavaScript -->
+    <h1 class="hero-title" id="heroTitle">Hear<br><em>everything.</em></h1>
+    <p class="lede hero-sub intro">Studio-grade sound that adapts to the world around you — then quietly lets it go.</p>
+    <div class="hero-actions intro">
+      <a href="#story" class="btn btn-primary">Discover the design
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </a>
+      <span class="hero-price">From <strong>$449</strong> · concept</span>
+    </div>
+  </div>
+
+  <div class="hero-media intro">
+    <img id="heroImg" src="img/hero.jpg" width="1672" height="941" alt="AURA Pro headphones, front view, lit by warm studio light" fetchpriority="high">
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true"><i></i>Scroll</div>
+</section>
+
+<!-- ═══════ MANIFESTO ═══════ -->
+<section class="manifesto" aria-label="The AURA manifesto">
+  <span class="overline">The AURA Manifesto</span>
+  <p class="manifesto-text" id="manifestoText">We didn't set out to build another pair of headphones. We set out to make everything else disappear — until all that remains is the music, the moment, and you.</p>
+  <div class="manifesto-rule" aria-hidden="true"></div>
+</section>
+
+<!-- ═══════ PRODUCT STORY ═══════ -->
+<section class="story" id="story" aria-label="The AURA Pro story, in three stages">
+  <div class="story-viewport" id="storyViewport">
+    <div class="story-head">
+      <span class="overline">The AURA Pro story</span>
+      <div style="display:flex;align-items:center;gap:1.75rem">
+        <ol class="story-rail" id="storyRail">
+          <li class="active"><b>01</b>The Form</li>
+          <li><b>02</b>The Craft</li>
+          <li><b>03</b>The Technology</li>
+        </ol>
+        <span class="story-meter" aria-hidden="true"><i id="storyMeter"></i></span>
+      </div>
+    </div>
+
+    <div class="story-stages">
+      <!-- Stage 1 — The Form -->
+      <article class="story-stage" data-stage="0">
+        <figure class="story-figure">
+          <img src="img/front.jpg" width="1672" height="941" alt="AURA Pro shown in three-quarter view, the complete headphone floating above a dark surface" loading="eager">
+        </figure>
+        <div class="story-copy">
+          <span class="overline">Stage I — The Form</span>
+          <h2 class="story-title">Designed to disappear.</h2>
+          <p class="story-desc">Every curve is shaped for hours of comfort you stop noticing. A titanium frame and hand-stitched protein leather, balanced to rest on you rather than press.</p>
+        </div>
+      </article>
+
+      <!-- Stage 2 — The Craft -->
+      <article class="story-stage" data-stage="1">
+        <figure class="story-figure">
+          <img src="img/detail.jpg" width="1672" height="941" alt="Close-up of the brushed titanium hinge and textured leather ear cushion" loading="eager">
+        </figure>
+        <div class="story-copy">
+          <span class="overline">Stage II — The Craft</span>
+          <h2 class="story-title">Material obsession.</h2>
+          <p class="story-desc">Brushed titanium hinges. Memory-foam cushions wrapped in grained protein leather. A hairline of champagne gold where metal meets driver. Every surface considered.</p>
+        </div>
+      </article>
+
+      <!-- Stage 3 — The Technology -->
+      <article class="story-stage" data-stage="2">
+        <figure class="story-figure">
+          <img src="img/side.jpg" width="1672" height="941" alt="AURA Pro in side profile, showing the ear cup, driver housing and slider" loading="eager">
+          <!-- Coordinates measured on img/side.jpg (1672×941): slider block centre (902,344), driver face centre (870,675),
+               cushion band (664,600), lower cup rim (778,798); mapped into the 5:4 cover crop: x% = (x/1672 − 0.148) / 0.703 -->
+          <div class="hotspot" style="--x:55.7%;--y:36.6%"><span class="hotspot-dot"></span><span class="hotspot-line"></span><span class="hotspot-text">Titanium frame<small>Headband adjuster</small></span></div>
+          <div class="hotspot" style="--x:53%;--y:71.7%"><span class="hotspot-dot"></span><span class="hotspot-line"></span><span class="hotspot-text">50mm planar driver<small>One in each ear cup</small></span></div>
+          <div class="hotspot to-left" style="--x:35.4%;--y:63.8%"><span class="hotspot-dot"></span><span class="hotspot-line"></span><span class="hotspot-text">Noise-cancelling mics<small>Six in total</small></span></div>
+          <div class="hotspot to-left" style="--x:45.1%;--y:84.8%"><span class="hotspot-dot"></span><span class="hotspot-line"></span><span class="hotspot-text">Battery<small>Inside the ear cup</small></span></div>
+        </figure>
+        <div class="story-copy">
+          <span class="overline">Stage III — The Technology</span>
+          <h2 class="story-title">Silence on demand.</h2>
+          <p class="story-desc">The technology lives inside the form, not on top of it. A 50mm planar driver sits at the centre of each ear cup, while microphones in the housing listen to the room so the noise cancellation can adapt as it changes.</p>
+          <ul class="story-specs" aria-label="Stage III highlights">
+            <li>Titanium frame<span>Headband adjuster</span></li>
+            <li>50mm planar driver<span>One in each ear cup</span></li>
+            <li>Noise-cancelling mics<span>Six in total</span></li>
+            <li>Battery<span>Inside the ear cup</span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FEATURES ═══════ -->
+<section class="features" id="features" aria-labelledby="featuresTitle">
+  <div class="features-aside reveal">
+    <span class="overline">Why AURA Pro</span>
+    <h2 class="display" id="featuresTitle">Engineered for the uncompromising.</h2>
+    <p class="lede">Four decisions define how AURA Pro sounds, feels and lasts. None of them were the easy option.</p>
+    <figure class="features-figure">
+      <img src="img/detail.jpg" width="1672" height="941" alt="" loading="lazy">
+      <figcaption>Hinge detail · brushed titanium</figcaption>
+    </figure>
+  </div>
+
+  <ol class="feature-list">
+    <li class="feature-row reveal">
+      <span class="feature-num">01</span>
+      <div>
+        <h3 class="feature-title">Spatial Audio</h3>
+        <p class="feature-desc">Music placed around you, not inside your head. Spatial audio processing gives every instrument its own place in a three-dimensional soundstage, rendered through the 50mm planar driver in each ear cup.</p>
+      </div>
+      <span class="feature-stat">360°<small>Soundstage</small></span>
+    </li>
+    <li class="feature-row reveal">
+      <span class="feature-num">02</span>
+      <div>
+        <h3 class="feature-title">Adaptive ANC</h3>
+        <p class="feature-desc">Trains, offices, open-plan cafés — the cancellation re-tunes itself as your surroundings change, so you never reach for a setting. The world fades. Your music stays.</p>
+      </div>
+      <span class="feature-stat">200×<small>Adjustments a second*</small></span>
+    </li>
+    <li class="feature-row reveal">
+      <span class="feature-num">03</span>
+      <div>
+        <h3 class="feature-title">60-Hour Battery</h3>
+        <p class="feature-desc">A long-haul flight and the week after it, on one charge. Running low? Ten minutes on the cable returns five more hours. Charge less, listen more.</p>
+      </div>
+      <span class="feature-stat">10<span style="font-size:.55em">min</span><small>For five more hours</small></span>
+    </li>
+    <li class="feature-row reveal">
+      <span class="feature-num">04</span>
+      <div>
+        <h3 class="feature-title">Titanium Frame</h3>
+        <p class="feature-desc">Light enough to forget on long sessions, strong enough to live in a bag. Grade 5 titanium is lighter than steel and far stronger — built to outlast everything else you carry.</p>
+      </div>
+      <span class="feature-stat">Gr. 5<small>Titanium</small></span>
+    </li>
+  </ol>
+  <p class="features-note">* Figures on this page are concept design targets for a fictional product, not measured results.</p>
+</section>
+
+<!-- ═══════ SPECS ═══════ -->
+<section class="specs" id="specs" aria-labelledby="specsTitle">
+  <div class="specs-inner">
+    <div class="specs-intro reveal">
+      <span class="overline">Technical details</span>
+      <h2 class="display" id="specsTitle">Numbers that speak volumes.</h2>
+      <p class="lede">The story showed how AURA Pro is made. These are the numbers it is designed to hit — each one a deliberate trade-off between performance and weight.</p>
+      <span class="concept-note">Concept specifications · not a real product</span>
+    </div>
+    <div class="spec-grid">
+      <div class="spec reveal"><span class="spec-index">01</span><div class="spec-value"><span class="count" data-to="50">50</span><span class="spec-unit">mm</span></div><div class="spec-label">Planar driver<small>Driver size, one in each ear cup</small></div></div>
+      <div class="spec reveal"><span class="spec-index">02</span><div class="spec-value"><span class="count" data-to="60">60</span><span class="spec-unit">hr</span></div><div class="spec-label">Battery life<small>On a single charge</small></div></div>
+      <div class="spec reveal"><span class="spec-index">03</span><div class="spec-value"><span class="count" data-to="48">48</span><span class="spec-unit">dB</span></div><div class="spec-label">Noise cancellation<small>Maximum noise reduction</small></div></div>
+      <div class="spec reveal"><span class="spec-index">04</span><div class="spec-value"><span class="count" data-to="265">265</span><span class="spec-unit">g</span></div><div class="spec-label">Total weight<small>Complete headphones</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DESIGN PRINCIPLE ═══════ -->
+<section class="principle" aria-label="AURA design principle">
+  <span class="overline reveal">Design principle</span>
+  <blockquote class="reveal">Silence isn't the absence of sound. It's the space that lets music finally arrive — unhurried, uncrowded, entirely yours.</blockquote>
+  <cite class="reveal">AURA Design Principle No. 01</cite>
+</section>
+
+<!-- ═══════ RESERVE ═══════ -->
+<section class="reserve" id="reserve" aria-labelledby="reserveTitle">
+  <div class="reserve-media reveal">
+    <img src="img/hero.jpg" width="1672" height="941" alt="" loading="lazy">
+  </div>
+  <div class="reserve-copy">
+    <ol class="reserve-recap reveal" aria-label="The story so far">
+      <li><span><b>01</b>The Form</span></li>
+      <li><span><b>02</b>The Craft</span></li>
+      <li><span><b>03</b>The Technology</span></li>
+    </ol>
+    <h2 class="display reveal" id="reserveTitle">Now, hear everything.</h2>
+    <p class="lede reveal">AURA Pro in Graphite &amp; Champagne. Concept launch, Q1 2027 — designed and built as a portfolio piece.</p>
+    <div class="reserve-actions reveal">
+      <button type="button" class="btn btn-primary" id="reserveBtn" aria-haspopup="dialog">Reserve — $449 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+      <a href="#story" class="btn btn-ghost">Replay the story</a>
+    </div>
+    <p class="reserve-fine reveal">Portfolio demonstration — reservations and payments are not live.</p>
+  </div>
+
+  <dialog class="demo-dialog" id="demoDialog" aria-labelledby="demoTitle">
+    <span class="overline">Portfolio demo</span>
+    <h3 id="demoTitle">Thanks for your interest.</h3>
+    <p>AURA Pro is a fictional product created to demonstrate scroll-driven storytelling and front-end craft. There is no checkout, and no details are collected.</p>
+    <div class="reserve-actions">
+      <form method="dialog"><button class="btn btn-primary" value="close" autofocus>Close</button></form>
+      <a href="#top" class="btn btn-ghost" id="demoTop">Back to top</a>
+    </div>
+  </dialog>
+</section>
+</main>
+
+<footer>
+  <span class="nav-logo">AURA</span>
+  <span>AURA Pro is a fictional concept · Portfolio demonstration by Sai · © 2026</span>
+  <a href="#top" class="top-link">Back to top ↑</a>
+</footer>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script src="js/gsap.min.js"></script>
+<script src="js/ScrollTrigger.min.js"></script>
+<script>
+/* ── Non-animation UI: works with or without GSAP ── */
+(function () {
+  var nav = document.getElementById('nav');
+  var toggle = document.getElementById('navToggle');
+  function setOpen(open, returnFocus) {
+    nav.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (open) { var first = document.querySelector('#navLinks a'); setTimeout(function () { first && first.focus(); }, 30); }
+    else if (returnFocus) toggle.focus();
+  }
+  toggle.addEventListener('click', function () { setOpen(!nav.classList.contains('open'), true); });
+  document.querySelectorAll('#navLinks a').forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nav.classList.contains('open')) setOpen(false, true); });
+  /* Close the menu if focus leaves it (keyboard users tabbing past the last link) */
+  nav.addEventListener('focusout', function (e) { if (nav.classList.contains('open') && !nav.contains(e.relatedTarget)) setOpen(false); });
+
+  var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 40); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  var dlg = document.getElementById('demoDialog');
+  document.getElementById('reserveBtn').addEventListener('click', function () {
+    if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
+  });
+  document.getElementById('demoTop').addEventListener('click', function () { if (dlg.open) dlg.close(); });
+})();
+
+/* ── Motion layer: progressive enhancement only ── */
+(function () {
+  'use strict';
+  var root = document.documentElement;
+
+  function revealAll() { root.classList.add('intro-done'); }
+
+  if (typeof window.gsap === 'undefined' || typeof window.ScrollTrigger === 'undefined') {
+    console.warn('[AURA] GSAP unavailable — static layout shown.');
+    revealAll();
+    return;
+  }
+  if (root.classList.contains('reduced-motion')) { revealAll(); return; } /* stacked story, no scroll-driven motion */
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* Scoped cleanup: everything this page creates lives in `ctx` (one-off tweens and triggers)
+     or `mm` (breakpoint-dependent story). A failure reverts ONLY these — other GSAP code is untouched. */
+  var mm = gsap.matchMedia();
+  var ctx = null;
+  var storyEl = document.getElementById('story');
+  function fail(err) {
+    console.error('[AURA] Animation setup failed, falling back to static layout.', err);
+    try { mm.revert(); } catch (e) {}
+    try { if (ctx) ctx.revert(); } catch (e) {}
+    storyEl.classList.remove('is-pinned');
+    revealAll();
+  }
+  /* matchMedia callbacks re-run on resize, outside the try below — guard them too */
+  function safe(fn) { return function () { try { return fn.apply(this, arguments); } catch (e) { fail(e); } }; }
+
+  try {
+   /* Create the context FIRST, then add setup into it: if setup throws part-way,
+      everything created before the error is still recorded and can be reverted. */
+   ctx = gsap.context(function () {});
+   ctx.add(function () {
+    /* ── 1. Hero intro: short (≈1s), headline itself is never hidden ── */
+    gsap.timeline({ defaults: { ease: 'power3.out' }, onComplete: revealAll })
+      .to('.hero .intro', { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 }, 0.05)
+      .fromTo('#heroImg', { scale: 1.06 }, { scale: 1, duration: 1.6, ease: 'power2.out' }, 0);
+
+    /* Hero parallax out — on wrappers, so it never fights the intro transforms */
+    gsap.to('.hero-copy', {
+      yPercent: -14, opacity: 0.25, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+    gsap.to('#heroImg', {
+      yPercent: 8, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+    });
+
+    /* ── 2. Page progress ── */
+    gsap.to('#scrollProgress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.3 } });
+
+    /* ── 3. Manifesto: words brighten with scroll (text is fully visible without JS) ── */
+    var mEl = document.getElementById('manifestoText');
+    mEl.innerHTML = mEl.textContent.trim().split(/\s+/).map(function (w) { return '<span class="w">' + w + '</span>'; }).join(' ');
+    gsap.fromTo('#manifestoText .w', { opacity: 0.16 }, {
+      opacity: 1, stagger: 0.12, ease: 'none',
+      scrollTrigger: { trigger: '#manifestoText', start: 'top 82%', end: 'bottom 52%', scrub: 0.4 }
+    });
+
+    /* ── 4. Product story ──
+       SINGLE SOURCE OF TRUTH: STORY_SCROLL_VH = how many viewport-heights the visitor
+       scrolls while the story is pinned. GSAP's pin spacer adds exactly this distance;
+       the section has no fixed height of its own, so nothing is double-counted. */
+    var STORY_SCROLL_VH = 3.0;
+    var story = document.getElementById('story');
+
+    mm.add('(min-width: 960px) and (hover: hover) and (pointer: fine)', safe(function () {
+      story.classList.add('is-pinned');
+
+      var stages  = gsap.utils.toArray('.story-stage');
+      var figs    = stages.map(function (s) { return s.querySelector('.story-figure'); });
+      var imgs    = stages.map(function (s) { return s.querySelector('.story-figure img'); });
+      var copies  = stages.map(function (s) { return s.querySelector('.story-copy'); });
+      var spots   = gsap.utils.toArray('.hotspot');
+      var railItems = gsap.utils.toArray('#storyRail li');
+      var active = -1;
+      function setActive(i) {
+        if (i === active) return; active = i;
+        railItems.forEach(function (li, n) { li.classList.toggle('active', n === i); });
+      }
+
+      /* Stage 1 is fully visible the moment the pin starts — no empty pinned state */
+      gsap.set([figs[1], figs[2]], { autoAlpha: 0 });
+      gsap.set([copies[1], copies[2]], { autoAlpha: 0, y: 28 });
+      gsap.set(spots, { autoAlpha: 0 });
+      gsap.set(spots.map(function (s) { return s.querySelector('.hotspot-line'); }), { scaleX: 0 });
+
+      /* Timeline units: 0 → 11. Stage boundaries are labelled; rail reads them. */
+      var tl = gsap.timeline({
+        defaults: { ease: 'power2.inOut' },
+        scrollTrigger: {
+          trigger: '#storyViewport',
+          start: 'top top',
+          end: function () { return '+=' + Math.round(window.innerHeight * STORY_SCROLL_VH); },
+          pin: true,
+          pinSpacing: true,
+          scrub: 0.8,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: function (self) {
+            var t = self.progress * tl.duration();
+            setActive(t < tl.labels.craft ? 0 : t < tl.labels.tech ? 1 : 2);
+          }
+        }
+      });
+
+      /* Pacing (11 units across STORY_SCROLL_VH viewports):
+         Form 0–2.6 · crossfade 2.6–3.9 · Craft 3.9–6.1 · crossfade 6.1–7.4 · labels 7.5–8.8 · hold 8.8–11 */
+      tl.fromTo('#storyMeter', { scaleX: 0 }, { scaleX: 1, ease: 'none', duration: 11 }, 0)
+
+        /* Stage 1 — The Form: slow settle, long hold */
+        .fromTo(imgs[0], { scale: 1.07 }, { scale: 1, ease: 'none', duration: 2.6 }, 0)
+
+        /* 1 → 2: copy leaves first; the next image dissolves in ON TOP of the previous one (no dark dip) */
+        .addLabel('craft', 3.25)
+        .to(copies[0], { autoAlpha: 0, y: -20, duration: 0.5, ease: 'power2.in' }, 2.6)
+        .to(figs[1], { autoAlpha: 1, duration: 1.3, ease: 'sine.inOut' }, 2.6)
+        .fromTo(imgs[1], { scale: 1.06 }, { scale: 1, ease: 'power2.out', duration: 1.8 }, 2.6)
+        .to(copies[1], { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 3.3)
+        /* outgoing image dissolves over the same window and drifts outward — a true crossfade,
+           not a double exposure; combined coverage never drops below ~75%, so no empty frame */
+        .to(figs[0], { autoAlpha: 0, duration: 1.3, ease: 'none' }, 2.6)
+        .to(imgs[0], { scale: 1.035, duration: 1.3, ease: 'none' }, 2.6)
+        .to(imgs[1], { xPercent: -2, ease: 'none', duration: 1.7 }, 4.4)   /* gentle drift across the material */
+
+        /* 2 → 3 */
+        .addLabel('tech', 6.75)
+        .to(copies[1], { autoAlpha: 0, y: -20, duration: 0.5, ease: 'power2.in' }, 6.1)
+        .to(figs[2], { autoAlpha: 1, duration: 1.3, ease: 'sine.inOut' }, 6.1)
+        .fromTo(imgs[2], { scale: 1.05 }, { scale: 1, ease: 'power2.out', duration: 1.3 }, 6.1)   /* settled before labels */
+        .to(copies[2], { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 6.8)
+        .to(figs[1], { autoAlpha: 0, duration: 1.3, ease: 'none' }, 6.1)
+        .to(imgs[1], { scale: 1.035, duration: 1.3, ease: 'none' }, 6.1);
+
+      /* Labels one at a time, after the image has fully settled, then held until the section releases */
+      spots.forEach(function (s, i) {
+        var at = 7.5 + i * 0.36;
+        tl.to(s, { autoAlpha: 1, duration: 0.3, ease: 'power1.out' }, at)
+          .to(s.querySelector('.hotspot-line'), { scaleX: 1, duration: 0.4, ease: 'power2.out' }, at + 0.05);
+      });
+      tl.to({}, { duration: 11 - tl.duration() });   /* pad to exactly 11 units = final hold */
+
+      setActive(0);
+      return function () { story.classList.remove('is-pinned'); };
+    }));
+
+    /* Stacked story (touch, tablets, phones): normal scroll with restrained reveals */
+    mm.add('(max-width: 959px), (hover: none), (pointer: coarse)', safe(function () {
+      gsap.utils.toArray('.story-stage').forEach(function (stage) {
+        gsap.from(stage.children, {
+          opacity: 0, y: 36, duration: 0.9, ease: 'power3.out', stagger: 0.12,
+          scrollTrigger: { trigger: stage, start: 'top 82%', toggleActions: 'play none none reverse' }
+        });
+      });
+    }));
+
+    /* ── 5. Section reveals (reversible). Content is visible in CSS; GSAP only adds motion. ── */
+    gsap.utils.toArray('.reveal').forEach(function (el) {
+      gsap.from(el, {
+        opacity: 0, y: 32, duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+      });
+    });
+
+    /* Spec counters: rest state is always the real value; they only count when entering */
+    gsap.utils.toArray('.count').forEach(function (el) {
+      var to = +el.dataset.to;
+      ScrollTrigger.create({
+        trigger: el, start: 'top 88%',
+        onEnter: function () {
+          var o = { v: 0 };
+          gsap.to(o, { v: to, duration: 1.4, ease: 'power2.out', onUpdate: function () { el.textContent = Math.round(o.v); } });
+        }
+      });
+    });
+
+   }); /* end ctx.add */
+
+    /* ── 6. Measure only after fonts and images settle ── */
+    var refresh = function () { ScrollTrigger.refresh(); };
+    window.addEventListener('load', refresh);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+    window.addEventListener('orientationchange', function () { setTimeout(refresh, 250); });
+
+  } catch (err) {
+    fail(err);   /* reverts only this page's context + matchMedia, then shows the static page */
+  }
+})();
+</script>
+</body>
+</html>
